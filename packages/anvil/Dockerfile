@@ -10,8 +10,12 @@ EOF
 
 # download pre-compiled binaries
 ARG ANVIL_VERSION=3d6bfddf1e9335c623ba47b590da532f8d785ef4
-RUN curl -sSL https://github.com/foundry-rs/foundry/releases/download/nightly-${ANVIL_VERSION}/foundry_nightly_linux_$(dpkg --print-architecture).tar.gz | \
-    tar -zx -C /usr/local/bin
+# RUN curl -sSL https://github.com/foundry-rs/foundry/releases/download/nightly-${ANVIL_VERSION}/foundry_nightly_linux_$(dpkg --print-architecture).tar.gz | \
+#     tar -zx -C /usr/local/bin
+# COPY anvil-arm64 /usr/local/bin/anvil
+RUN curl -L https://foundry.paradigm.xyz | bash
+RUN export PATH="$PATH:/root/.foundry/bin" && foundryup
+# RUN source /root/.bashrc && foundryup
 
 # healthcheck script using net_listening JSON-RPC method
 COPY eth_isready /usr/local/bin
