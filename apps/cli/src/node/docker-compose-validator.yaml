@@ -2,7 +2,7 @@ version: "3.9"
 
 services:
     validator:
-        image: sunodo/rollups-node:0.6.1
+        image: sunodo/rollups-node:devel
         depends_on:
             dapp_deployer:
                 condition: service_completed_successfully

@@ -3,7 +3,8 @@ ARG REGISTRY=docker.io
 ARG ORG=cartesi
 ARG ROLLUPS_VERSION
 
-FROM ${REGISTRY}/${ORG}/rollups-node:${ROLLUPS_VERSION}
+# FROM ${REGISTRY}/${ORG}/rollups-node:${ROLLUPS_VERSION}
+FROM ${REGISTRY}/${ORG}/rollups-node:devel
 
 USER root
 
