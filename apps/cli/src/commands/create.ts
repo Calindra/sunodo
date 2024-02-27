@@ -1,12 +1,33 @@
 import { Args, Command, Flags } from "@oclif/core";
 import c from "ansi-colors";
-import type { TemplateProvider } from "giget";
-import { DownloadTemplateResult, downloadTemplate } from "giget";
+import type { DownloadTemplateResult, TemplateProvider } from "giget";
+import { downloadTemplate } from "giget";
 import ora from "ora";
 
 const DEFAULT_TEMPLATES_BRANCH = "sdk-0.2";
 
+const repoUrl = 'https://github.com/sunodo/sunodo-templates'; // Substitua pela URL do seu repositório no GitHub
+
 export default class CreateCommand extends Command {
+
+    async listRemoteBranches(): Promise<string[]> {
+        try {
+            const apiUrl = `${repoUrl}/branches/all`;
+            const response = await fetch(apiUrl);
+
+            if (response.ok) {
+            const data = await response.json();
+            return Promise.resolve(data.payload.branches.map((branch: any) => branch.name))
+            } else {
+                Promise.reject(`Erro ao obter a lista de branches remotos: ${response.statusText}`);
+                return Promise.resolve([DEFAULT_TEMPLATES_BRANCH])
+            }
+        } catch (error) {
+            Promise.reject(`Erro ao obter a lista de branches remotos: ${error}`);
+            return Promise.resolve([DEFAULT_TEMPLATES_BRANCH])
+        }
+    }
+
     static description = "Create application";
 
     static examples = ["<%= config.bin %> <%= command.id %>"];
@@ -36,7 +57,7 @@ export default class CreateCommand extends Command {
         }),
         branch: Flags.string({
             description: `sunodo/sunodo-templates repository branch name to use`,
-            default: DEFAULT_TEMPLATES_BRANCH,
+            default: DEFAULT_TEMPLATES_BRANCH
         }),
     };
 
@@ -57,14 +78,24 @@ export default class CreateCommand extends Command {
         const input = `sunodo:${template}`;
         return downloadTemplate(input, {
             dir: out,
-            providers: { sunodo: sunodoProvider },
+            providers: { sunodo: sunodoProvider }
         });
     }
 
     public async run(): Promise<void> {
         const { args, flags } = await this.parse(CreateCommand);
         const spinner = ora("Creating application...").start();
+        const opcoesDisponiveis = await this.listRemoteBranches();
+
+        flags.branch = flags.branch || DEFAULT_TEMPLATES_BRANCH
+
+       
         try {
+
+              if (!opcoesDisponiveis.includes(flags.branch)) {
+                spinner.fail('Branch inválida. Escolha uma das opções disponíveis: ' + opcoesDisponiveis.toString());
+                return
+            }
             const { dir } = await this.download(
                 flags.template,
                 flags.branch,
