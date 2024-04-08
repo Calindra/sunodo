@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.0
+
+### Minor Changes
+
+- 695189c: remove metamask mobile wallet support
+- d6d969e: replace arbitrum-goerli and optimism-goerli with arbitrum-sepolia and optimism-sepolia
+- 5d077e6: remove walletconnect mobile wallet support
+
+### Patch Changes
+
+- de39bd5: remove unused ledgerhq package
+- 012bf1d: fix checking of flag --run-as-root for sunodo shell command
+
 ## 0.11.2
 
 ### Patch Changes
